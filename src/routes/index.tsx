@@ -1,29 +1,32 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Ruler, Truck, Undo2 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { heroPerfume, products } from "@/lib/products";
+import { heroMenswear, products } from "@/lib/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "گلدن‌کارت | فروشگاه عطر، شمع و لوازم خانه" },
+      { title: "گلدن‌کارت | فروشگاه پوشاک مردانه و پسرانه" },
       {
         name: "description",
         content:
-          "کالکشن آفتاب‌تاب گلدن‌کارت: عطر، شمع، زعفران و لوازم خانه دست‌چین‌شده با تخفیف تا ۴۰٪.",
+          "خرید آنلاین پوشاک مردانه و پسرانه: پیراهن، تیشرت، شلوار، هودی، کت و پالتو با جستجو و فیلتر سایز و رنگ.",
       },
-      { property: "og:title", content: "گلدن‌کارت | کالکشن آفتاب‌تاب" },
+      { property: "og:title", content: "گلدن‌کارت | پوشاک مردانه و پسرانه" },
       {
         property: "og:description",
-        content: "عطرهای گرم و لوازم خانه لوکس، با ارسال سریع به سراسر ایران.",
+        content: "کالکشن پاییز و زمستان برای پدر و پسر، با ارسال سریع به سراسر ایران.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
 
 function Index() {
-  const featured = products.slice(0, 4);
+  const featured = products.filter((p) => p.badge).slice(0, 4);
+  const boys = products.filter((p) => p.gender === "پسرانه").slice(0, 4);
 
   return (
     <main className="relative z-10 mx-auto w-full max-w-7xl px-5 lg:px-10">
@@ -32,14 +35,15 @@ function Index() {
         <div className="relative grid items-center gap-8 p-8 md:grid-cols-2 md:p-12">
           <div>
             <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-              ✦ تخفیف پاییزه
+              ✦ کالکشن پاییز و زمستان
             </span>
             <h1 className="text-4xl font-black leading-[1.15] tracking-tight text-ink md:text-5xl">
-              کالکشن
-              <br className="hidden md:block" /> آفتاب‌تاب
+              پوشاک مردانه
+              <br className="hidden md:block" /> و پسرانه
             </h1>
             <p className="mt-4 max-w-sm leading-relaxed text-ink/60">
-              عطرهای گرم و حس‌آمیز، در نور طلایی غروب. تازه‌ترین کالکشن ما با تخفیف تا ۴۰٪.
+              از پیراهن و جین تا پالتو و کت تک؛ برای پدر و پسر، با سایزبندی کامل و رنگ‌های
+              دست‌چین‌شده.
             </p>
             <Link
               to="/products"
@@ -49,24 +53,54 @@ function Index() {
             </Link>
           </div>
           <img
-            src={heroPerfume}
-            alt="بطری‌های عطر کهربایی در نور طلایی غروب"
-            width={1080}
-            height={1080}
+            src={heroMenswear}
+            alt="مرد با پالتو شتری و پسربچه با کاپشن جین در نور طلایی"
+            width={1280}
+            height={1280}
             className="aspect-square w-full rounded-2xl object-cover"
           />
         </div>
       </section>
 
-      <section>
+      <section className="mb-14 grid gap-4 sm:grid-cols-3">
+        {[
+          { icon: Truck, title: "ارسال سریع", text: "ارسال رایگان بالای ۲٬۰۰۰٬۰۰۰ تومان" },
+          { icon: Ruler, title: "سایزبندی کامل", text: "از S تا XXL و سایز کودک ۲ تا ۱۲ سال" },
+          { icon: Undo2, title: "بازگشت ۷ روزه", text: "تعویض سایز رایگان در تهران" },
+        ].map((f) => (
+          <div key={f.title} className="card-glass flex items-center gap-3 rounded-2xl p-4">
+            <f.icon className="size-6 text-brand" />
+            <div>
+              <p className="text-sm font-bold text-ink">{f.title}</p>
+              <p className="text-xs text-ink/60">{f.text}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section className="mb-14">
         <div className="mb-7 flex items-end justify-between">
-          <h2 className="text-2xl font-black tracking-tight text-ink">محصولات منتخب</h2>
+          <h2 className="text-2xl font-black tracking-tight text-ink">منتخب مردانه</h2>
           <Link to="/products" className="text-sm font-bold text-primary hover:underline">
             همه محصولات ←
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="mb-7 flex items-end justify-between">
+          <h2 className="text-2xl font-black tracking-tight text-ink">پسرانه</h2>
+          <Link to="/products" className="text-sm font-bold text-primary hover:underline">
+            همه محصولات ←
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {boys.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
