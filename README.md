@@ -1,14 +1,20 @@
-# Welcome to your Lovable project
+# NextCart Persian
+
+یک سایت فروشگاهی مدرن بساز، صفحه محصولات، سبد خرید و ورود کاربران داشته باشه.
+با وردپرس نباشه. میخوام با NextJs باشه.
+فارسی و rtl باشه
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://shop-e-roya.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/e131260a-79c4-48ad-88ef-0ab041951de1).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +26,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
