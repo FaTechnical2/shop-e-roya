@@ -79,16 +79,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "گلدن‌کارت | فروشگاه آنلاین عطر و لوازم خانه" },
+      { title: "گلدن‌کارت | فروشگاه پوشاک مردانه و پسرانه" },
       {
         name: "description",
         content:
-          "گلدن‌کارت، فروشگاه آنلاین عطر، شمع و لوازم خانه با ارسال سریع به سراسر ایران.",
+          "گلدن‌کارت، فروشگاه آنلاین پوشاک مردانه و پسرانه با ارسال سریع به سراسر ایران.",
       },
       { property: "og:title", content: "گلدن‌کارت | فروشگاه آنلاین" },
       {
         property: "og:description",
-        content: "عطر، شمع و لوازم خانه دست‌چین‌شده با کیفیت لوکس.",
+        content: "پیراهن، شلوار، هودی، کت و پالتو مردانه و پسرانه با سایزبندی کامل.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
