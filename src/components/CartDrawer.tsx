@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { formatToman, products } from "@/lib/products";
+import { formatToman } from "@/lib/products";
+import { useProducts } from "@/lib/products.queries";
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, setQty, remove } = useCart();
+  const { products } = useProducts();
 
   const lines = items
     .map((i) => ({ ...i, product: products.find((p) => p.id === i.productId)! }))
