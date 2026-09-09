@@ -232,7 +232,7 @@ function ProductsPage() {
 
           <div>
             <p className="mb-2 text-sm font-bold text-ink">
-              حداکثر قیمت: {formatToman(maxPrice)} تومان
+              حداکثر قیمت: {formatToman(priceCap)} تومان
             </p>
             <input
               type="range"
