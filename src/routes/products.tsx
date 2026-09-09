@@ -239,7 +239,7 @@ function ProductsPage() {
               min={facets.priceMin}
               max={facets.priceMax}
               step={50000}
-              value={maxPrice}
+              value={priceCap}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               aria-label="حداکثر قیمت"
               className="w-full accent-[var(--brand)]"
