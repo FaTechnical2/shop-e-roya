@@ -1,13 +1,18 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingBasket, User, LogOut } from "lucide-react";
+import { ShoppingBasket, User, LogOut, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/lib/cart";
+import { isAdminQueryOptions } from "@/lib/products.queries";
 
 export function Header() {
   const { totalCount, openCart } = useCart();
   const [email, setEmail] = useState<string | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: adminData } = useQuery({ ...isAdminQueryOptions, enabled: Boolean(email) });
+  const isAdmin = adminData?.isAdmin === true;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -22,8 +27,10 @@ export function Header() {
   }, []);
 
   const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/" });
+    navigate({ to: "/", replace: true });
   };
 
   return (
@@ -54,6 +61,16 @@ export function Header() {
         >
           محصولات
         </Link>
+        {isAdmin && (
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-primary"
+            activeProps={{ className: "font-bold text-primary" }}
+          >
+            <Settings className="size-4" />
+            مدیریت
+          </Link>
+        )}
       </nav>
 
       <div className="flex items-center gap-2">

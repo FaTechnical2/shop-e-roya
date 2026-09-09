@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Ruler, Truck, Undo2 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { heroMenswear, products } from "@/lib/products";
+import { heroMenswear } from "@/lib/products";
+import { productRowsQueryOptions, useProducts } from "@/lib/products.queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,10 +22,12 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(productRowsQueryOptions),
   component: Index,
 });
 
 function Index() {
+  const { products } = useProducts();
   const featured = products.filter((p) => p.badge).slice(0, 4);
   const boys = products.filter((p) => p.gender === "پسرانه").slice(0, 4);
 

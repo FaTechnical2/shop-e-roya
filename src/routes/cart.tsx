@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
-import { formatToman, products } from "@/lib/products";
+import { formatToman } from "@/lib/products";
+import { useProducts } from "@/lib/products.queries";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { items, setQty, remove, clear } = useCart();
+  const { products } = useProducts();
 
   const lines = items
     .map((i) => ({ ...i, product: products.find((p) => p.id === i.productId)! }))
