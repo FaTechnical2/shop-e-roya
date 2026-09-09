@@ -23,6 +23,7 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { items, setQty, remove, clear } = useCart();
+  const { products } = useProducts();
 
   const lines = items
     .map((i) => ({ ...i, product: products.find((p) => p.id === i.productId)! }))
