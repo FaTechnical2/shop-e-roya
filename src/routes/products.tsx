@@ -184,19 +184,19 @@ function ProductsPage() {
 
           <ChipGroup
             title="جنسیت"
-            options={genders}
+            options={facets.genders}
             selected={gender}
             onToggle={(v) => setGender(toggle(gender, v))}
           />
           <ChipGroup
             title="دسته‌بندی"
-            options={categories}
+            options={facets.categories}
             selected={cats}
             onToggle={(v) => setCats(toggle(cats, v))}
           />
           <ChipGroup
             title="سایز"
-            options={allSizes}
+            options={facets.sizes}
             selected={sizes}
             onToggle={(v) => setSizes(toggle(sizes, v))}
           />
@@ -204,7 +204,7 @@ function ProductsPage() {
           <div>
             <p className="mb-2 text-sm font-bold text-ink">رنگ</p>
             <div className="flex flex-wrap gap-2">
-              {allColors.map((c) => {
+              {facets.colors.map((c) => {
                 const on = colors.includes(c.name);
                 return (
                   <button
@@ -225,7 +225,7 @@ function ProductsPage() {
 
           <ChipGroup
             title="برند"
-            options={brands}
+            options={facets.brands}
             selected={brandSel}
             onToggle={(v) => setBrandSel(toggle(brandSel, v))}
           />
@@ -236,8 +236,8 @@ function ProductsPage() {
             </p>
             <input
               type="range"
-              min={priceBounds.min}
-              max={priceBounds.max}
+              min={facets.priceMin}
+              max={facets.priceMax}
               step={50000}
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
