@@ -67,17 +67,22 @@ function ChipGroup({
 }
 
 function ProductsPage() {
+  const { products, isLoading } = useProducts();
+  const facets = useMemo(() => buildFacets(products), [products]);
+
   const [query, setQuery] = useState("");
   const [gender, setGender] = useState<string[]>([]);
   const [cats, setCats] = useState<string[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
   const [brandSel, setBrandSel] = useState<string[]>([]);
-  const [maxPrice, setMaxPrice] = useState(priceBounds.max);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [onlyStock, setOnlyStock] = useState(false);
   const [onlyDiscount, setOnlyDiscount] = useState(false);
   const [sort, setSort] = useState<SortKey>("featured");
   const [openFilters, setOpenFilters] = useState(false);
+
+  const priceCap = maxPrice ?? facets.priceMax;
 
   const list = useMemo(() => {
     const q = query.trim();
@@ -88,7 +93,7 @@ function ProductsPage() {
       if (sizes.length && !p.sizes.some((s) => sizes.includes(s))) return false;
       if (colors.length && !p.colors.some((c) => colors.includes(c.name))) return false;
       if (brandSel.length && !brandSel.includes(p.brand)) return false;
-      if (p.price > maxPrice) return false;
+      if (p.price > priceCap) return false;
       if (onlyStock && !p.inStock) return false;
       if (onlyDiscount && !p.oldPrice) return false;
       return true;
@@ -98,7 +103,7 @@ function ProductsPage() {
     if (sort === "expensive") sorted.sort((a, b) => b.price - a.price);
     if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating);
     return sorted;
-  }, [query, gender, cats, sizes, colors, brandSel, maxPrice, onlyStock, onlyDiscount, sort]);
+  }, [products, query, gender, cats, sizes, colors, brandSel, priceCap, onlyStock, onlyDiscount, sort]);
 
   const activeCount =
     gender.length +
@@ -106,7 +111,7 @@ function ProductsPage() {
     sizes.length +
     colors.length +
     brandSel.length +
-    (maxPrice < priceBounds.max ? 1 : 0) +
+    (maxPrice !== null && maxPrice < facets.priceMax ? 1 : 0) +
     (onlyStock ? 1 : 0) +
     (onlyDiscount ? 1 : 0);
 
@@ -116,7 +121,7 @@ function ProductsPage() {
     setSizes([]);
     setColors([]);
     setBrandSel([]);
-    setMaxPrice(priceBounds.max);
+    setMaxPrice(null);
     setOnlyStock(false);
     setOnlyDiscount(false);
   }
