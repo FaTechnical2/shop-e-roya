@@ -23,6 +23,7 @@ export const Route = createFileRoute("/products")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(productRowsQueryOptions),
   component: ProductsPage,
 });
 
