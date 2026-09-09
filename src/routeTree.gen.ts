@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as ApiPublicProductImageNameRouteImport } from './routes/api/public/product-image.$name'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,12 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicProductImageNameRoute =
+  ApiPublicProductImageNameRouteImport.update({
+    id: '/api/public/product-image/$name',
+    path: '/api/public/product-image/$name',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +54,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/products': typeof ProductsRoute
   '/product/$id': typeof ProductIdRoute
+  '/api/public/product-image/$name': typeof ApiPublicProductImageNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +62,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/products': typeof ProductsRoute
   '/product/$id': typeof ProductIdRoute
+  '/api/public/product-image/$name': typeof ApiPublicProductImageNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +71,33 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/products': typeof ProductsRoute
   '/product/$id': typeof ProductIdRoute
+  '/api/public/product-image/$name': typeof ApiPublicProductImageNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cart' | '/products' | '/product/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/cart'
+    | '/products'
+    | '/product/$id'
+    | '/api/public/product-image/$name'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cart' | '/products' | '/product/$id'
-  id: '__root__' | '/' | '/auth' | '/cart' | '/products' | '/product/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/cart'
+    | '/products'
+    | '/product/$id'
+    | '/api/public/product-image/$name'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/cart'
+    | '/products'
+    | '/product/$id'
+    | '/api/public/product-image/$name'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +106,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   ProductsRoute: typeof ProductsRoute
   ProductIdRoute: typeof ProductIdRoute
+  ApiPublicProductImageNameRoute: typeof ApiPublicProductImageNameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/product-image/$name': {
+      id: '/api/public/product-image/$name'
+      path: '/api/public/product-image/$name'
+      fullPath: '/api/public/product-image/$name'
+      preLoaderRoute: typeof ApiPublicProductImageNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   ProductsRoute: ProductsRoute,
   ProductIdRoute: ProductIdRoute,
+  ApiPublicProductImageNameRoute: ApiPublicProductImageNameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
