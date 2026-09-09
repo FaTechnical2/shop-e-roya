@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Ruler, Truck, Undo2 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { heroMenswear, products } from "@/lib/products";
+import { heroMenswear } from "@/lib/products";
+import { productRowsQueryOptions, useProducts } from "@/lib/products.queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
