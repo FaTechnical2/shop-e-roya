@@ -26,6 +26,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { products } = useProducts();
   const featured = products.filter((p) => p.badge).slice(0, 4);
   const boys = products.filter((p) => p.gender === "پسرانه").slice(0, 4);
 
