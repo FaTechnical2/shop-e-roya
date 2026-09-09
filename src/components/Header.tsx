@@ -1,13 +1,18 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingBasket, User, LogOut } from "lucide-react";
+import { ShoppingBasket, User, LogOut, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/lib/cart";
+import { isAdminQueryOptions } from "@/lib/products.queries";
 
 export function Header() {
   const { totalCount, openCart } = useCart();
   const [email, setEmail] = useState<string | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: adminData } = useQuery({ ...isAdminQueryOptions, enabled: Boolean(email) });
+  const isAdmin = adminData?.isAdmin === true;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
