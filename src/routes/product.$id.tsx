@@ -3,13 +3,14 @@ import { useState } from "react";
 import { ShoppingBasket, Star } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
-import { formatToman, products } from "@/lib/products";
+import { formatToman, rowToProduct, type ProductRow } from "@/lib/products";
+import { getProduct } from "@/lib/products.functions";
 
 export const Route = createFileRoute("/product/$id")({
-  loader: ({ params }) => {
-    const product = products.find((p) => p.id === params.id);
-    if (!product) throw notFound();
-    return { product };
+  loader: async ({ params }) => {
+    const row = await getProduct({ data: { slug: params.id } });
+    if (!row) throw notFound();
+    return { product: rowToProduct(row as unknown as ProductRow) };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
