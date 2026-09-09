@@ -61,6 +61,16 @@ export function Header() {
         >
           محصولات
         </Link>
+        {isAdmin && (
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-primary"
+            activeProps={{ className: "font-bold text-primary" }}
+          >
+            <Settings className="size-4" />
+            مدیریت
+          </Link>
+        )}
       </nav>
 
       <div className="flex items-center gap-2">
