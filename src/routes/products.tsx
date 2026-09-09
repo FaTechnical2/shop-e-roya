@@ -2,16 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import {
-  allColors,
-  allSizes,
-  brands,
-  categories,
-  formatToman,
-  genders,
-  priceBounds,
-  products,
-} from "@/lib/products";
+import { buildFacets, formatToman } from "@/lib/products";
+import { productRowsQueryOptions, useProducts } from "@/lib/products.queries";
 
 export const Route = createFileRoute("/products")({
   head: () => ({
