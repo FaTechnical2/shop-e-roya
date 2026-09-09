@@ -272,7 +272,9 @@ function ProductsPage() {
           <p className="mb-4 text-sm text-ink/60">
             {list.length.toLocaleString("fa-IR")} کالا یافت شد
           </p>
-          {list.length === 0 ? (
+          {isLoading ? (
+            <p className="text-sm text-ink/50">در حال بارگذاری محصولات…</p>
+          ) : list.length === 0 ? (
             <div className="card-glass rounded-3xl p-10 text-center">
               <p className="text-lg font-bold text-ink">چیزی پیدا نشد</p>
               <p className="mt-2 text-sm text-ink/60">
