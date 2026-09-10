@@ -4,7 +4,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const PRODUCT_COLUMNS =
-  "id, slug, name, brand, gender, category, price, old_price, image, description, material, sizes, colors, rating, stock, badge, sort_order";
+  "id, slug, name, brand, gender, category, price, old_price, image, description, material, sizes, colors, rating, stock, badge, sort_order, discount_percent, offer_label, is_offer, offer_until";
 
 function publicClient() {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
@@ -73,6 +73,10 @@ export interface ProductInput {
   rating: number;
   stock: number;
   badge: string | null;
+  discountPercent: number;
+  offerLabel: string | null;
+  isOffer: boolean;
+  offerUntil: string | null;
 }
 
 function validate(input: ProductInput): ProductInput {
@@ -103,6 +107,10 @@ export const saveProduct = createServerFn({ method: "POST" })
       rating: input.rating,
       stock: Math.round(input.stock),
       badge: input.badge?.trim() ? input.badge.trim() : null,
+      discount_percent: Math.min(90, Math.max(0, Math.round(input.discountPercent || 0))),
+      offer_label: input.offerLabel?.trim() ? input.offerLabel.trim() : null,
+      is_offer: Boolean(input.isOffer),
+      offer_until: input.offerUntil || null,
     };
 
     if (input.id) {

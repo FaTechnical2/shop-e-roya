@@ -61,6 +61,13 @@ export function Header() {
         >
           محصولات
         </Link>
+        <Link
+          to="/track"
+          className="transition-colors hover:text-primary"
+          activeProps={{ className: "font-bold text-primary" }}
+        >
+          پیگیری سفارش
+        </Link>
         {isAdmin && (
           <Link
             to="/admin"

@@ -69,6 +69,10 @@ function ChipGroup({
 function ProductsPage() {
   const { products, isLoading } = useProducts();
   const facets = useMemo(() => buildFacets(products), [products]);
+  const offers = useMemo(
+    () => products.filter((p) => p.isOffer || p.discountPercent > 0).slice(0, 4),
+    [products],
+  );
 
   const [query, setQuery] = useState("");
   const [gender, setGender] = useState<string[]>([]);
@@ -134,7 +138,23 @@ function ProductsPage() {
         دقیقاً همان چیزی را پیدا کنید که می‌خواهید.
       </p>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+      {offers.length > 0 && (
+        <section className="mt-8">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-black text-ink">پیشنهادهای ویژه</h2>
+            <span className="rounded-full bg-destructive/10 px-3 py-1 text-xs font-bold text-destructive">
+              تا ٪{Math.max(...offers.map((o) => o.discountPercent)).toLocaleString("fa-IR")} تخفیف
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {offers.map((p) => (
+              <ProductCard key={`offer-${p.id}`} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-ink/40" />
           <input

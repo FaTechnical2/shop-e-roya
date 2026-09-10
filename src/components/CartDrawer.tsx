@@ -36,11 +36,8 @@ export function CartDrawer() {
               سبد خرید شما خالی است.
             </p>
           )}
-          {lines.map(({ product, qty }) => (
-            <div
-              key={product.id}
-              className="flex gap-3 rounded-2xl border border-sand bg-card p-3"
-            >
+          {lines.map(({ product, qty, key, size, colorName, colorHex }) => (
+            <div key={key} className="flex gap-3 rounded-2xl border border-sand bg-card p-3">
               <img
                 src={product.image}
                 alt={product.name}
@@ -51,13 +48,25 @@ export function CartDrawer() {
               />
               <div className="min-w-0 flex-1">
                 <h3 className="truncate text-sm font-bold text-ink">{product.name}</h3>
+                <p className="mt-0.5 flex items-center gap-2 text-[11px] text-ink/55">
+                  {size && <span>سایز {size}</span>}
+                  {colorName && (
+                    <span className="inline-flex items-center gap-1">
+                      <span
+                        className="size-3 rounded-full border border-sand"
+                        style={{ backgroundColor: colorHex }}
+                      />
+                      {colorName}
+                    </span>
+                  )}
+                </p>
                 <p className="mt-0.5 text-xs text-ink/50">
                   {formatToman(product.price)} تومان
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center gap-1 rounded-full border border-sand p-0.5">
                     <button
-                      onClick={() => setQty(product.id, qty - 1)}
+                      onClick={() => setQty(key, qty - 1)}
                       aria-label="کمتر"
                       className="grid size-6 place-items-center rounded-full text-ink/70 hover:bg-sand"
                     >
@@ -67,7 +76,7 @@ export function CartDrawer() {
                       {qty.toLocaleString("fa-IR")}
                     </span>
                     <button
-                      onClick={() => setQty(product.id, qty + 1)}
+                      onClick={() => setQty(key, qty + 1)}
                       aria-label="بیشتر"
                       className="grid size-6 place-items-center rounded-full text-ink/70 hover:bg-sand"
                     >
@@ -75,7 +84,7 @@ export function CartDrawer() {
                     </button>
                   </div>
                   <button
-                    onClick={() => remove(product.id)}
+                    onClick={() => remove(key)}
                     className="flex items-center gap-1 text-[11px] text-destructive"
                   >
                     <Trash2 className="size-3" /> حذف

@@ -17,11 +17,23 @@ export function ProductCard({ product }: { product: Product }) {
           height={1024}
           className="aspect-square w-full rounded-2xl object-cover"
         />
-        {product.badge && (
-          <span className="absolute right-3 top-3 rounded-full bg-primary px-3 py-1 text-[11px] font-bold text-cream">
-            {product.badge}
-          </span>
-        )}
+        <div className="absolute right-3 top-3 flex flex-col items-end gap-1">
+          {product.discountPercent > 0 && (
+            <span className="rounded-full bg-destructive px-3 py-1 text-[11px] font-black text-cream">
+              ٪{product.discountPercent.toLocaleString("fa-IR")} تخفیف
+            </span>
+          )}
+          {product.offerLabel && (
+            <span className="rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-cream">
+              {product.offerLabel}
+            </span>
+          )}
+          {product.badge && (
+            <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold text-cream">
+              {product.badge}
+            </span>
+          )}
+        </div>
         {!product.inStock && (
           <span className="absolute left-3 top-3 rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-cream">
             ناموجود
@@ -70,7 +82,14 @@ export function ProductCard({ product }: { product: Product }) {
           </p>
         </div>
         <button
-          onClick={() => add(product.id)}
+          onClick={() =>
+            add({
+              productId: product.id,
+              size: product.sizes[0] ?? "",
+              colorName: product.colors[0]?.name ?? "",
+              colorHex: product.colors[0]?.hex ?? "",
+            })
+          }
           disabled={!product.inStock}
           aria-label={`افزودن ${product.name} به سبد`}
           className="btn-golden grid size-10 place-items-center rounded-full transition-transform group-hover:scale-110 disabled:opacity-40"
