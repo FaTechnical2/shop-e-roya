@@ -41,11 +41,17 @@ function ProductDetail() {
   const [color, setColor] = useState(product.colors[0]?.name ?? "");
 
   function handleAdd() {
-    if (!size) {
+    if (product.sizes.length > 0 && !size) {
       toast.error("لطفاً ابتدا سایز را انتخاب کنید");
       return;
     }
-    add(product.id);
+    const picked = product.colors.find((c) => c.name === color);
+    add({
+      productId: product.id,
+      size: size ?? "",
+      colorName: picked?.name ?? "",
+      colorHex: picked?.hex ?? "",
+    });
   }
 
   return (
@@ -119,7 +125,27 @@ function ProductDetail() {
             </div>
           </div>
 
-          <div className="mt-8 flex items-end gap-3">
+          {(product.discountPercent > 0 || product.offerLabel) && (
+            <div className="mt-8 flex flex-wrap items-center gap-2">
+              {product.discountPercent > 0 && (
+                <span className="rounded-full bg-destructive px-4 py-1.5 text-sm font-black text-cream">
+                  ٪{product.discountPercent.toLocaleString("fa-IR")} تخفیف
+                </span>
+              )}
+              {product.offerLabel && (
+                <span className="rounded-full bg-ink px-4 py-1.5 text-sm font-bold text-cream">
+                  {product.offerLabel}
+                </span>
+              )}
+              {product.offerUntil && (
+                <span className="text-xs text-ink/55">
+                  تا {new Date(product.offerUntil).toLocaleDateString("fa-IR")}
+                </span>
+              )}
+            </div>
+          )}
+
+          <div className="mt-4 flex items-end gap-3">
             {product.oldPrice && (
               <span className="text-base text-ink/40 line-through">
                 {formatToman(product.oldPrice)}

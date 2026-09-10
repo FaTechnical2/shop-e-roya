@@ -45,6 +45,10 @@ interface FormState {
   rating: string;
   stock: string;
   badge: string;
+  discountPercent: string;
+  offerLabel: string;
+  isOffer: boolean;
+  offerUntil: string;
 }
 
 const emptyForm: FormState = {
@@ -63,6 +67,10 @@ const emptyForm: FormState = {
   rating: "5",
   stock: "0",
   badge: "",
+  discountPercent: "0",
+  offerLabel: "",
+  isOffer: false,
+  offerUntil: "",
 };
 
 function rowToForm(row: ProductRow): FormState {
@@ -83,6 +91,10 @@ function rowToForm(row: ProductRow): FormState {
     rating: String(row.rating),
     stock: String(row.stock),
     badge: row.badge ?? "",
+    discountPercent: String(row.discount_percent ?? 0),
+    offerLabel: row.offer_label ?? "",
+    isOffer: Boolean(row.is_offer),
+    offerUntil: row.offer_until ? row.offer_until.slice(0, 10) : "",
   };
 }
 
@@ -171,6 +183,10 @@ function AdminPage() {
         rating: Number(form.rating) || 5,
         stock: Number(form.stock) || 0,
         badge: form.badge.trim() || null,
+        discountPercent: Number(form.discountPercent) || 0,
+        offerLabel: form.offerLabel.trim() || null,
+        isOffer: form.isOffer,
+        offerUntil: form.offerUntil ? new Date(form.offerUntil).toISOString() : null,
       };
       await save({ data: payload });
       await queryClient.invalidateQueries({ queryKey: productRowsQueryOptions.queryKey });
@@ -204,12 +220,20 @@ function AdminPage() {
             {rows.length.toLocaleString("fa-IR")} محصول در فروشگاه ثبت شده است.
           </p>
         </div>
-        <button
-          onClick={() => setForm({ ...emptyForm })}
-          className="btn-golden inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold"
-        >
-          <Plus className="size-4" /> محصول جدید
-        </button>
+        <div className="flex gap-3">
+          <Link
+            to="/admin/orders"
+            className="inline-flex h-12 items-center gap-2 rounded-full border border-sand px-6 text-sm font-bold text-ink"
+          >
+            سفارش‌ها
+          </Link>
+          <button
+            onClick={() => setForm({ ...emptyForm })}
+            className="btn-golden inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold"
+          >
+            <Plus className="size-4" /> محصول جدید
+          </button>
+        </div>
       </div>
 
       {form && (
@@ -274,6 +298,47 @@ function AdminPage() {
             <div>
               <label className={labelClass} htmlFor="f-badge">برچسب (اختیاری)</label>
               <input id="f-badge" className={inputClass} value={form.badge} onChange={(e) => update("badge", e.target.value)} placeholder="پرفروش" />
+            </div>
+            <div className="md:col-span-3 rounded-2xl border border-sand bg-card/60 p-4">
+              <p className="mb-3 text-sm font-black text-ink">تخفیف و پیشنهاد ویژه</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div>
+                  <label className={labelClass} htmlFor="f-disc">درصد تخفیف (۰ تا ۹۰)</label>
+                  <input id="f-disc" type="number" min={0} max={90} className={inputClass} value={form.discountPercent} onChange={(e) => update("discountPercent", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass} htmlFor="f-offer-label">متن پیشنهاد (اختیاری)</label>
+                  <input id="f-offer-label" className={inputClass} value={form.offerLabel} onChange={(e) => update("offerLabel", e.target.value)} placeholder="پیشنهاد شگفت‌انگیز" />
+                </div>
+                <div>
+                  <label className={labelClass} htmlFor="f-offer-until">پایان تخفیف (اختیاری)</label>
+                  <input id="f-offer-until" type="date" className={inputClass} value={form.offerUntil} onChange={(e) => update("offerUntil", e.target.value)} />
+                </div>
+              </div>
+              <label className="mt-3 flex items-center gap-2 text-sm text-ink/75">
+                <input
+                  type="checkbox"
+                  checked={form.isOffer}
+                  onChange={(e) => update("isOffer", e.target.checked)}
+                  className="size-4 accent-[var(--brand)]"
+                />
+                نمایش در بخش «پیشنهادهای ویژه» صفحه محصولات
+              </label>
+              {Number(form.discountPercent) > 0 && Number(form.price) > 0 && (
+                <p className="mt-2 text-xs text-ink/60">
+                  قیمت نهایی پس از تخفیف:{" "}
+                  <span className="font-black text-primary">
+                    {formatToman(
+                      Math.round(
+                        (Number(form.price) -
+                          (Number(form.price) * Number(form.discountPercent)) / 100) /
+                          1000,
+                      ) * 1000,
+                    )}{" "}
+                    تومان
+                  </span>
+                </p>
+              )}
             </div>
             <div className="md:col-span-3">
               <label className={labelClass} htmlFor="f-sizes">سایزها (با ویرگول جدا کنید)</label>

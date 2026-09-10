@@ -45,6 +45,14 @@ export interface Product {
   stock: number;
   inStock: boolean;
   badge?: string;
+  /** درصد تخفیف فعال (۰ یعنی بدون تخفیف) */
+  discountPercent: number;
+  /** متن پیشنهاد ویژه، مثلاً «پیشنهاد شگفت‌انگیز» */
+  offerLabel?: string;
+  /** آیا محصول در بخش پیشنهادهای ویژه نمایش داده شود */
+  isOffer: boolean;
+  /** پایان مهلت تخفیف (ISO) */
+  offerUntil?: string;
 }
 
 /** تصاویری که همراه سایت ارسال شده‌اند (محصولات اولیه). */
@@ -99,18 +107,43 @@ export interface ProductRow {
   rating: number | string;
   stock: number;
   badge: string | null;
+  discount_percent?: number | null;
+  offer_label?: string | null;
+  is_offer?: boolean | null;
+  offer_until?: string | null;
+}
+
+/** آیا تخفیف هنوز معتبر است (مهلت تمام نشده). */
+export function isDiscountActive(row: {
+  discount_percent?: number | null;
+  offer_until?: string | null;
+}): boolean {
+  const percent = Number(row.discount_percent ?? 0);
+  if (!percent || percent <= 0) return false;
+  if (row.offer_until && new Date(row.offer_until).getTime() < Date.now()) return false;
+  return true;
+}
+
+/** قیمت نهایی پس از اعمال درصد تخفیف (رند شده به هزار تومان). */
+export function discountedPrice(price: number, percent: number): number {
+  const value = price - (price * percent) / 100;
+  return Math.max(0, Math.round(value / 1000) * 1000);
 }
 
 export function rowToProduct(row: ProductRow): Product {
   const colors = Array.isArray(row.colors) ? (row.colors as ColorOption[]) : [];
+  const active = isDiscountActive(row);
+  const percent = active ? Number(row.discount_percent ?? 0) : 0;
+  const price = active ? discountedPrice(row.price, percent) : row.price;
+  const oldPrice = active ? row.price : (row.old_price ?? undefined);
   return {
     id: row.slug,
     name: row.name,
     brand: row.brand,
     gender: row.gender,
     category: row.category,
-    price: row.price,
-    ...(row.old_price ? { oldPrice: row.old_price } : {}),
+    price,
+    ...(oldPrice && oldPrice > price ? { oldPrice } : {}),
     image: resolveImage(row.image),
     description: row.description,
     material: row.material,
@@ -120,6 +153,10 @@ export function rowToProduct(row: ProductRow): Product {
     stock: row.stock,
     inStock: row.stock > 0,
     ...(row.badge ? { badge: row.badge } : {}),
+    discountPercent: percent,
+    ...(row.offer_label ? { offerLabel: row.offer_label } : {}),
+    isOffer: Boolean(row.is_offer) && active,
+    ...(row.offer_until ? { offerUntil: row.offer_until } : {}),
   };
 }
 

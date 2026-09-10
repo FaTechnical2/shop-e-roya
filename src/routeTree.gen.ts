@@ -14,8 +14,10 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
 import { Route as ApiPublicProductImageNameRouteImport } from './routes/api/public/product-image.$name'
 
 const IndexRoute = IndexRouteImport.update({
@@ -42,6 +44,11 @@ const ProductsRoute = ProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -52,6 +59,12 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const ApiPublicProductImageNameRoute =
   ApiPublicProductImageNameRouteImport.update({
     id: '/api/public/product-image/$name',
@@ -64,8 +77,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/products': typeof ProductsRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/track': typeof TrackRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/product/$id': typeof ProductIdRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/api/public/product-image/$name': typeof ApiPublicProductImageNameRoute
 }
 export interface FileRoutesByTo {
@@ -73,8 +88,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/products': typeof ProductsRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/track': typeof TrackRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/product/$id': typeof ProductIdRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/api/public/product-image/$name': typeof ApiPublicProductImageNameRoute
 }
 export interface FileRoutesById {
@@ -84,8 +101,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/products': typeof ProductsRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/track': typeof TrackRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/product/$id': typeof ProductIdRoute
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/api/public/product-image/$name': typeof ApiPublicProductImageNameRoute
 }
 export interface FileRouteTypes {
@@ -95,8 +114,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/products'
+    | '/track'
     | '/admin'
     | '/product/$id'
+    | '/admin/orders'
     | '/api/public/product-image/$name'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -104,8 +125,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/products'
+    | '/track'
     | '/admin'
     | '/product/$id'
+    | '/admin/orders'
     | '/api/public/product-image/$name'
   id:
     | '__root__'
@@ -114,8 +137,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/products'
+    | '/track'
     | '/_authenticated/admin'
     | '/product/$id'
+    | '/_authenticated/admin/orders'
     | '/api/public/product-image/$name'
   fileRoutesById: FileRoutesById
 }
@@ -125,6 +150,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
   ProductsRoute: typeof ProductsRoute
+  TrackRoute: typeof TrackRoute
   ProductIdRoute: typeof ProductIdRoute
   ApiPublicProductImageNameRoute: typeof ApiPublicProductImageNameRoute
 }
@@ -166,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -180,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/api/public/product-image/$name': {
       id: '/api/public/product-image/$name'
       path: '/api/public/product-image/$name'
@@ -190,12 +230,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -207,6 +258,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CartRoute: CartRoute,
   ProductsRoute: ProductsRoute,
+  TrackRoute: TrackRoute,
   ProductIdRoute: ProductIdRoute,
   ApiPublicProductImageNameRoute: ApiPublicProductImageNameRoute,
 }
